@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Chat con Socket.io y Express</title>
+    
+    <style>
+        body{
+            font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+        #chatbox{
+            text-align: center;
+            margin: 0 auto;
+            margin-bottom: 25px;
+            padding: 10px;
+            background: #fff;
+            height: 270px;
+            width: 430px;
+            border: 1px solid#ACD8F0;
+            overflow: auto;
+        }
+        #loginForm{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="menu">
+            <h1>Bienvenido al chat</h1>
+            <p class="bienvenido">Bienvenid@, <b id="userName"></b></p>
+            <p class="logout"><a id="exit" href="/">Salir del chat</a></p>
+        </div>
+
+        <div id="chatbox">
+            <!--Caja de chat que tendra los mensajes de los users-->
+        </div>
+
+        <form action="" name="message" id="message">
+            <input type="text" name="userMsg" id="mensaje" size="63" placeholder="Escribir mensaje">
+            <input type="button" name="submitmsg" id="enviarMensaje" value="Enviar">
+        </form>
+    </div>
+    <!--<script src="/socket.io/socket.io.js"></script>-->
+    <script src="http://yourwebsite.com:12345/socket.io/socket.io.js"></script>
+    <script> 
+        var socket= io();
+        console.log(socket);
+        console.log("conectado");
+        //var socket= io.connect('http://localhost:3001',{'forceNew': true});
+        $(document).ready(()=>{
+            var username= response.session.username;
+            socket.emit('enviarUser',username);
+
+            $('#userName').append('Dafne');
+            $('#enviarMensaje').click(()=>{
+                if($("#mensaje").val().length<=0){
+                    alert("Escribe un mensaje para enviar");
+                }else{
+                    var mensaje= $('#mensaje').val();
+                    socket.emit('msjNuevo', mensaje); //enviamos el mensaje a la funcion msjNuevo
+                }                
+            })
+            socket.on('mensaje',(data)=>{//funcion para concatenar el mensaje en el chat
+                var nuevoMensaje= '<b>'+data.usuario+' dice: </b>'+ data.mensaje;
+                $('#chatbox').append(nuevoMensaje+'</br>');
+                $('#mensaje').val(""); //Es igual a document.getElementById('message').reset();
+            })
+        });
+    </script>
+    
+</body>
+</html>
